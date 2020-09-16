@@ -47,38 +47,22 @@ export class Duck extends Router {
                   ? this.defaultErrorHandler(error, req, res)
                   : this.defaultHandler(req, res));
             // there can either be an error or not
-            if (error) {
-              // if this middleware is an error handler - ok
-              if (middleware.handler.length === 4) {
-                return (middleware.handler as ErrorMiddlewareFunction)(
-                  error,
-                  req,
-                  res,
-                  next,
-                );
-              } else {
-                // if not, call the next middleware wrapper (hopefully it will recursively reach an error handler)
-                return next(error);
-              }
-            } else {
-              if (middleware.handler.length === 4) {
-                return next();
-              } else {
-                return (middleware.handler as MiddlewareFunction)(
-                  req,
-                  res,
-                  next,
-                );
-              }
+            if (!error) {
+              if (middleware.handler.length === 4) return next();
+              
+              return (middleware.handler as MiddlewareFunction)(req, res, next);
             }
+
+            // if this middleware is an error handler - ok
+            if (middleware.handler.length === 4) return (middleware.handler as ErrorMiddlewareFunction)(error, req, res, next);
+
+            // if not, call the next middleware wrapper (hopefully it will recursively reach an error handler)
+            return next(error);
           }
         );
         try {
-          if (middlewaresToRun.length === 0) {
-            this.defaultHandler(req, res);
-          } else {
-            middlewaresToRun[0]();
-          }
+          if (middlewaresToRun.length === 0) return this.defaultHandler(req, res);
+          middlewaresToRun[0]();
         } catch (err) {
           this.defaultErrorHandler(err, req, res);
         }

@@ -46,14 +46,10 @@ export class DuckRequest {
         const name = parts[0];
         const value = parts[1];
         if (this._query[name]) {
-          if (Array.isArray(this._query[name])) {
-            (this._query[name] as string[]).push(value);
-          } else {
-            this._query[name] = [(this.query[name] as string), value];
-          }
-        } else {
-          this._query[name] = value;
-        }
+          if (Array.isArray(this._query[name])) return (this._query[name] as string[]).push(value);
+          return this._query[name] = [(this.query[name] as string), value];
+        } 
+        this._query[name] = value;
       });
     }
   }
@@ -81,16 +77,10 @@ export class DuckRequest {
       const contentType = this.headers.get("Content-Type");
       const bodyRaw = await Deno.readAll(this.request.body);
       const body = new TextDecoder("utf-8").decode(bodyRaw);
-      if (contentType === "application/json") {
-        this._body = JSON.parse(body.toString());
-      } else if (contentType === "text/plain") {
-        this._body = body;
-      } else {
-        this._body = this.request.body;
-      }
-    } else {
-      this._body = this.request.body;
+      if (contentType === "application/json") return this._body = JSON.parse(body.toString());
+      if (contentType === "text/plain") return this._body = body;
     }
+    this._body = this.request.body;
   }
 
   get headers() {

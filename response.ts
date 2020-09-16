@@ -6,6 +6,7 @@ import {
 export class DuckResponse {
   private request: ServerRequest;
   private response: Response;
+  private sent: boolean = false;
 
   constructor(request: ServerRequest) {
     this.request = request;
@@ -16,6 +17,9 @@ export class DuckResponse {
   }
 
   send(data?: string | object) {
+    if (this.sent) return console.warn("Response has been already sent, cancelling");
+    
+    this.sent = true;
     if (data) {
       if (typeof data === "object") {
         data = JSON.stringify(data);
@@ -33,7 +37,7 @@ export class DuckResponse {
     return this;
   }
 
-  get headers() {
-    return this.response.headers;
+  get headers(): Headers {
+    return this.response.headers!;
   }
 }
