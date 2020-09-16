@@ -21,6 +21,10 @@ const posts = [{ id: 1, userId: 1, content: "I love ducks 🦆"}];
 // use middleware on duck instance (logging before route handling!)
 duck.use(logger);
 
+duck.get("/", (req, res, next) => {
+  res.file("./index.html");
+})
+
 // Define some routes
 router.get("/user/:id", (req, res, next) => {
   const user = users.find((user) => {

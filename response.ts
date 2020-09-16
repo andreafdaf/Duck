@@ -2,6 +2,7 @@ import {
   Response,
   ServerRequest,
 } from "https://deno.land/std@0.69.0/http/server.ts";
+import { lookup } from "https://deno.land/x/media_types/mod.ts";
 
 export class DuckResponse {
   private request: ServerRequest;
@@ -35,6 +36,19 @@ export class DuckResponse {
   status(status: number) {
     this.response.status = status;
     return this;
+  }
+
+  async file(filePath: string) {
+    try {
+      const contentType: any = await lookup(filePath);
+      this.response.headers?.set("Content-Type", contentType);
+      this.response.body = await Deno.open(filePath);
+      this.request.respond(this.response);
+    } catch (e) {
+      if (e instanceof Deno.errors.NotFound) return console.error(`File not found: ${filePath}`);
+  
+      console.error(e);
+    }
   }
 
   get headers(): Headers {
