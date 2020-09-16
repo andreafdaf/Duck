@@ -2,6 +2,7 @@ import {
   Response,
   ServerRequest,
 } from "https://deno.land/std@0.69.0/http/server.ts";
+import { lookup } from "https://deno.land/x/media_types/mod.ts";
 const { open, stat } = Deno;
 
 export class DuckResponse {
@@ -43,6 +44,9 @@ export class DuckResponse {
       const fileInfo = await stat(filePath);
       if (!fileInfo.isFile) return console.error(`This is not a valid file: ${filePath}`);
 
+      const contentType: any = await lookup(filePath);
+
+      this.response.headers?.set("Content-Type", contentType);
       this.response.body = await open(filePath);
       this.request.respond(this.response);
     } catch(e) {
