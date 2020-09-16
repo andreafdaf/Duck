@@ -33,15 +33,8 @@ export class Router {
     this._base = base;
   }
 
-  private route(
-    path: string,
-    method: HTTPMethods,
-    middlewareHandler: MiddlewareFunction | ErrorMiddlewareFunction,
-  ) {
-    const endpoint: Endpoint = {
-      path: () => `${this._base}${path}`,
-      method: method,
-    };
+  private route(path: string, method: HTTPMethods, middlewareHandler: MiddlewareFunction | ErrorMiddlewareFunction) {
+    const endpoint: Endpoint = { path: () => `${this._base}${path}`, method: method };
     this._middlewares.push(new Middleware(middlewareHandler, endpoint));
   }
 
@@ -56,23 +49,14 @@ export class Router {
    * Pushes given middleware or merges another router's middlewares with this router's middlewares
    * @param middlewareHandler - middleware to use or another router to merge with
    */
-  use(
-    middlewareHandler: MiddlewareFunction | ErrorMiddlewareFunction | Router,
-  ) {
+  use(middlewareHandler: MiddlewareFunction | ErrorMiddlewareFunction | Router) {
     if (middlewareHandler instanceof Router) {
       // prepend this router's base to the router's being used base
       middlewareHandler._base = this._base + middlewareHandler._base;
-      this._middlewares = this._middlewares.concat(
-        middlewareHandler.middlewares,
-      );
-    } else {
-      this._middlewares.push(
-        new Middleware(middlewareHandler, {
-          path: () => `${this._base}/*`,
-          method: HTTPMethods.ANY,
-        }),
-      );
+      return this._middlewares = this._middlewares.concat(middlewareHandler.middlewares);
     }
+
+    this._middlewares.push(new Middleware(middlewareHandler, { path: () => `${this._base}/*`, method: HTTPMethods.ANY }));
   }
 
   /**
