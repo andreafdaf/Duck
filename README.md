@@ -1,6 +1,9 @@
 # Duck
 This Project is inspired by https://github.com/artur-borys/lapis
 
+## Start app
+`deno run --allow-net --allow-read xxx.ts`
+
 ## Example
 ```typescript
 import { Duck, Router, DuckRequest, DuckResponse } from "./mod.ts";
