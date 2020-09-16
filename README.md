@@ -3,7 +3,7 @@ This Project is inspired by https://github.com/artur-borys/lapis
 
 ## Example
 ```typescript
-import { Duck, Router, DuckRequest, DuckResponse } from "./mod.ts";
+import { Duck, Router, DuckRequest, DuckResponse } from "https://raw.githubusercontent.com/EntenKoeniq/Duck/master/mod.ts";
 
 const PORT = 3000;
 const duck = new Duck();
