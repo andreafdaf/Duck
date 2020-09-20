@@ -1,6 +1,4 @@
-import {
-  ServerRequest,
-} from "https://deno.land/std@0.69.0/http/server.ts";
+import { ServerRequest } from "https://deno.land/std@0.70.0/http/server.ts";
 
 export interface QueryOrParams {
   [name: string]: string | string[];

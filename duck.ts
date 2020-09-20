@@ -1,18 +1,8 @@
-import {
-  serve,
-  HTTPOptions,
-  Server,
-} from "https://deno.land/std@0.69.0/http/server.ts";
+import { serve, HTTPOptions, Server } from "https://deno.land/std@0.70.0/http/server.ts";
 import { DuckResponse } from "./response.ts";
 import { DuckRequest } from "./request.ts";
-import {
-  Router,
-} from "./router.ts";
-import {
-  Middleware,
-  ErrorMiddlewareFunction,
-  MiddlewareFunction,
-} from "./middleware.ts";
+import { Router } from "./router.ts";
+import { Middleware, ErrorMiddlewareFunction, MiddlewareFunction } from "./middleware.ts";
 
 export class Duck extends Router {
   port?: number;
@@ -28,15 +18,9 @@ export class Duck extends Router {
         const req = new DuckRequest(request);
         await req.parseBody();
         // get middlewares that match the request
-        let matchingMiddlewares = Middleware.findMatching(
-          this.middlewares,
-          req,
-        );
+        let matchingMiddlewares = Middleware.findMatching(this.middlewares, req);
         // create functions which take optional error parameter and call middleware
-        const middlewaresToRun = matchingMiddlewares.map((
-          middleware,
-          i,
-        ) =>
+        const middlewaresToRun = matchingMiddlewares.map((middleware, i) =>
           (error?: Error): any => {
             middleware.setParams(req);
             // if there are no more defined middlewares, fallback to the default one
@@ -71,10 +55,7 @@ export class Duck extends Router {
   }
 
   private defaultHandler(req: DuckRequest, res: DuckResponse) {
-    res.status(404).send({
-      code: 404,
-      message: `Cannot ${req.method} ${req.url}`,
-    });
+    res.status(404).send({ code: 404, message: `Cannot ${req.method} ${req.url}` });
   }
 
   private defaultErrorHandler(
@@ -83,9 +64,7 @@ export class Duck extends Router {
     res: DuckResponse,
   ) {
     console.error(err);
-    res.status(500).send({
-      ok: false,
-    });
+    res.status(500).send({ ok: false });
   }
 
   /**
