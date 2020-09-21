@@ -56,13 +56,6 @@ router.post("/push", async (req, res) => {
 // use created router
 duck.use(router);
 
-// use error middleware (at the end! IMPORTANT)
-// error middleware has EXACTLY 4 parameters - very important
-duck.use(async (error, req, res, next) => {
-  if (error) return await res.send({ ok: false, error: error.message });
-  next!();
-});
-
 // Finally, listen
 duck.listen({ port: PORT }).then(() => {
   console.log(`Listening on ${PORT}`);
