@@ -36,7 +36,7 @@ router.get("/get/:id", (req, res) => { // http://localhost:3000/api/get/1
   if (!post) return res.status(404).send("Post not found!");
 
   res.send(post);
-})
+});
 
 router.get("/error", (req, res, next) => { // http://localhost:3000/api/error
   next(new Error("SomeError"));

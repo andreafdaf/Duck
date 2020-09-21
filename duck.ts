@@ -108,7 +108,7 @@ export class Duck extends Router {
   static async logger(req: DuckRequest, res: DuckResponse, next: Function) {
     await next();
     if (!res) return console.log(req.method, req.url);
-    if (req.error) console.error(req.error + "");
+    if (req.error) console.error(req.error);
     console.log(`Got a request from ${req.remoteAddr.hostname}: [${res.gStatus}] ${req.method} ${req.url}`);
   }
 }

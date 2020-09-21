@@ -26,7 +26,7 @@ router.get("/get/:id", (req, res) => { // http://localhost:3000/api/get/1
   if (!post) return res.status(404).send("Post not found!");
 
   res.send(post);
-})
+});
 
 router.get("/error", (req, res, next) => { // http://localhost:3000/api/error
   next(new Error("SomeError"));
@@ -45,13 +45,6 @@ router.post("/push", async (req, res) => {
 
 // use created router
 duck.use(router);
-
-// use error middleware (at the end! IMPORTANT)
-// error middleware has EXACTLY 4 parameters - very important
-duck.use(async (error, req, res, next) => {
-  if (error) return await res.send({ ok: false, error: error.message });
-  next!();
-});
 
 // Finally, listen
 duck.listen({ port: PORT }).then(() => {
