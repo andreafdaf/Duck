@@ -1,6 +1,11 @@
 # Duck 🦆
 This Project is inspired by https://github.com/artur-borys/lapis
 
+## Run
+```
+deno run --allow-net --allow-read xxx.ts
+```
+
 ## Example
 ```typescript
 import { Duck, Router } from "https://raw.githubusercontent.com/EntenKoeniq/Duck/master/mod.ts";
@@ -24,6 +29,14 @@ duck.get("/", (req, res) => {
 router.get("/posts", (req, res) => { // http://localhost:3000/api/posts
   res.send(posts);
 });
+
+router.get("/get/:id", (req, res) => { // http://localhost:3000/api/get/1
+  let post = posts.find((candidate) => candidate.id === Number(req.params.id));
+
+  if (!post) return res.status(404).send("Post not found!");
+
+  res.send(post);
+})
 
 router.get("/error", (req, res, next) => { // http://localhost:3000/api/error
   next(new Error("SomeError"));
