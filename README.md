@@ -3,26 +3,22 @@ This Project is inspired by https://github.com/artur-borys/lapis
 
 ## Example
 ```typescript
-import { Duck, Router, MiddlewareFunction } from "https://raw.githubusercontent.com/EntenKoeniq/Duck/master/mod.ts";
+import { Duck, Router } from "https://raw.githubusercontent.com/EntenKoeniq/Duck/master/mod.ts";
 
-const PORT = 3000;
-const duck = new Duck();
-const router = new Router("/api"); // http://localhost:3000/api/...
+const PORT = 3000,
+      posts = [{ id: 1, userId: 1, content: "I love ducks 🦆"}],
+      duck = new Duck(),
+      router = new Router("/api"); // http://localhost:3000/api/...
 
-// Define a middleware
-const requestLogger: MiddlewareFunction = (req, res, next) => {
-  console.log(`Got a request from ${req.remoteAddr.hostname}: ${req.method} ${req.url}`);
-  next();
-}
-
-const posts = [{ id: 1, userId: 1, content: "I love ducks 🦆"}];
-
-// use middleware on duck instance (logging before route handling!)
-duck.use(requestLogger);
+duck.use(Duck.logger);
+duck.use(Duck.cookies);
 
 /* ===== GET ===== */
 duck.get("/", (req, res) => {
    res.file("./index.html");
+
+   if (req.cookies?.has("cookieExample")) console.log(`Cookies: ${req.cookies?.get("cookieExample")}`);
+   else req.cookies?.set({ name: "cookieExample", value: "cookieValue"});
 })
 
 router.get("/posts", (req, res) => { // http://localhost:3000/api/posts

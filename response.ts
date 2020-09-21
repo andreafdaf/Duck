@@ -1,10 +1,12 @@
 import { Response, ServerRequest } from "https://deno.land/std@0.70.0/http/server.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
+import { CookieJar } from "./cookie_jar.ts";
 
 export class DuckResponse {
   private request: ServerRequest;
   private response: Response;
   private sent: boolean = false;
+  cookies?: CookieJar;
 
   constructor(request: ServerRequest) {
     this.request = request;
@@ -50,5 +52,9 @@ export class DuckResponse {
 
   get headers(): Headers {
     return this.response.headers!;
+  }
+
+  get gStatus(): Number {
+    return this.response.status!;
   }
 }

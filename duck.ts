@@ -3,6 +3,7 @@ import { DuckResponse } from "./response.ts";
 import { DuckRequest } from "./request.ts";
 import { Router } from "./router.ts";
 import { Middleware, ErrorMiddlewareFunction, MiddlewareFunction } from "./middleware.ts";
+import { CookieJar } from "./cookie_jar.ts";
 
 export class Duck extends Router {
   port?: number;
@@ -70,7 +71,7 @@ export class Duck extends Router {
   /**
    * Starts an http server with given options
    * @param {HTTPOptions} options - options for server instance 
-   */
+  */
   listen(options: HTTPOptions): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
@@ -85,8 +86,29 @@ export class Duck extends Router {
 
   /**
    * Currently not implemented - will be in the future
-   */
+  */
   listenTLS() {
     throw new Error("NotImplemented");
+  }
+
+  /**
+   * Middleware that adds cookies to request and response
+   * @see CookieJar
+   * @param {DuckRequest} req 
+   * @param {DuckResponse} res 
+   * @param {Function} next 
+  */
+  static cookies(req: DuckRequest, res: DuckResponse, next: Function) {
+    const cookieJar = new CookieJar(req, res);
+    req.cookies = cookieJar;
+    res.cookies = cookieJar;
+    next();
+  }
+
+  static async logger(req: DuckRequest, res: DuckResponse, next: Function) {
+    await next();
+    if (!res) return console.log(req.method, req.url);
+    if (req.error) console.error(req.error + "");
+    console.log(`Got a request from ${req.remoteAddr.hostname}: [${res.gStatus}] ${req.method} ${req.url}`);
   }
 }
