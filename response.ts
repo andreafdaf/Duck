@@ -24,7 +24,7 @@ export class DuckResponse {
       if (typeof data === "object") {
         data = JSON.stringify(data);
         this.response.headers?.set("Content-Type", "application/json");
-      } else {
+      } else if (!this.response.headers?.get("Content-Type")) {
         this.response.headers?.set("Content-Type", "text/plain");
       }
       this.response.body = data;
