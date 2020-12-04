@@ -3,16 +3,17 @@ import { DuckRequest } from "./request.ts";
 import { DuckResponse } from "./response.ts";
 import { HTTPMethods } from "./router.ts";
 
+export type DuckNext = (e?: Error) => void
 export type MiddlewareFunction = (
   req: DuckRequest,
   res: DuckResponse,
-  next: Function,
+  next: DuckNext,
 ) => any;
 export type ErrorMiddlewareFunction = (
   error: any,
   req: DuckRequest,
   res: DuckResponse,
-  next: Function,
+  next: DuckNext,
 ) => any;
 
 export interface Endpoint {
